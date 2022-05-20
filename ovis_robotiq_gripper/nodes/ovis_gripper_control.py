@@ -67,6 +67,7 @@ def command_callback(position):
     elif position == 3:
         command.rPR = 0  # open
 
+
 def mainLoop(device):
 
     # Gripper is a 2F with a TCP connection
@@ -94,18 +95,13 @@ def mainLoop(device):
         status = gripper.getStatus()
         pubInput.publish(status)
 
-        # Wait a little
-        # rospy.sleep(0.05)
-
         # Get the most recent command
-        rospy.Subscriber("/ovis/gripper/position_goal", OvisGripperPosition, command_callback, queue_size=1)
+        rospy.Subscriber("/ovis/gripper/position_goal",
+                         OvisGripperPosition, command_callback, queue_size=1)
 
         # Send the most recent command
         pubOutput.publish(command)
         gripper.sendCommand()
-
-        # Wait a little
-        # rospy.sleep(0.05)
 
 
 if __name__ == '__main__':
