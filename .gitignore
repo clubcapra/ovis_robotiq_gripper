@@ -1,6 +1,10 @@
 *~
 *.py[cod]
-.vscode/
+
+#VS Code
+/.vscode
+*/.vscode
+**/.vscode
 
 # C extensions
 *.so
