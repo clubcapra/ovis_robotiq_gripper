@@ -38,17 +38,17 @@
 import sys
 import os
 from sensor_msgs.msg import Joy
-from robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_output as outputMsg
-from robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_input as inputMsg
+from ovis_robotiq_gripper.msg import _OvisGripper_robot_output as outputMsg
+from ovis_robotiq_gripper.msg import _OvisGripper_robot_input as inputMsg
 import robotiq_modbus_rtu.comModbusRtu
-import robotiq_2f_gripper_control.baseRobotiq2FGripper
+import ovis_robotiq_gripper.baseRobotiq2FGripper
 import rospy
 import roslib
 roslib.load_manifest('robotiq_2f_gripper_control')
 roslib.load_manifest('robotiq_modbus_rtu')
 
 # GLOBAL TEMP
-command = outputMsg.Robotiq2FGripper_robot_output()
+command = outputMsg.OvisGripper_robot_output()
 
 
 def joy_callback(data):
@@ -59,7 +59,7 @@ def joy_callback(data):
     button_Y = data.buttons[3]
 
     if button_Y:
-        command = outputMsg.Robotiq2FGripper_robot_output()
+        command = outputMsg.OvisGripper_robot_output()
         command.rACT = 1  # activates the gripper
         command.rGTO = 1  # Go to requested position
         command.rFR = 255  # maximum force
@@ -74,7 +74,7 @@ def joy_callback(data):
 def mainLoop(device):
 
     # Gripper is a 2F with a TCP connection
-    gripper = robotiq_2f_gripper_control.baseRobotiq2FGripper.robotiqbaseRobotiq2FGripper()
+    gripper = ovis_robotiq_gripper.baseRobotiq2FGripper.robotiqbaseRobotiq2FGripper()
     gripper.client = robotiq_modbus_rtu.comModbusRtu.communication()
 
     # We connect to the address received as an argument
@@ -82,19 +82,17 @@ def mainLoop(device):
 
     rospy.init_node("ovis_robotiq_gripper")
 
-    # The Gripper status is published on the topic named 'Robotiq2FGripperRobotInput'
+    # The Gripper status is published on the topic named 'gripper_input'
     pubInput = rospy.Publisher(
-        'Robotiq2FGripperRobotInput', inputMsg.Robotiq2FGripper_robot_input, queue_size=1)
+        'gripper_input', inputMsg.OvisGripper_robot_input, queue_size=1)
 
-    # The Gripper command is published on the topic named 'Robotiq2FGripperRobotOutput'
+    # The Gripper command is published on the topic named 'gripper_output'
     pubOutput = rospy.Publisher(
-        'Robotiq2FGripperRobotOutput', outputMsg.Robotiq2FGripper_robot_output, queue_size=1)
-
-    # The Gripper command is received from the topic named 'Robotiq2FGripperRobotOutput'
-    #rospy.Subscriber('Robotiq2FGripperRobotOutput', outputMsg.Robotiq2FGripper_robot_output, gripper.refreshCommand)
+        'gripper_output', outputMsg.OvisGripper_robot_output, queue_size=1)
 
     # We loop
     while not rospy.is_shutdown():
+        global command
 
         # Get and publish the Gripper status
         status = gripper.getStatus()
