@@ -1,8 +1,8 @@
-uint8 gACT 
-uint8 gGTO 
-uint8 gSTA 
-uint8 gOBJ 
-uint8 gFLT
-uint8 gPR
-uint8 gPO
-uint8 gCU
+uint8 gACT #getActivation
+uint8 gGTO #getActionStatus
+uint8 gSTA #getMotionStatus
+uint8 gOBJ #getObjectDetection
+uint8 gFLT #getFaultStatus
+uint8 gPR #getPreviousPositionRequest
+uint8 gPO #getPosition
+uint8 gCU #getCurrent
