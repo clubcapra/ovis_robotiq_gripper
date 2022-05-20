@@ -1,5 +1,0 @@
-<launch>
-
-  <node pkg="robotiq_2f_gripper_control" type="ovis_robotiq_gripper.py" name="ovis_robotiq_gripper" output="screen" args="/dev/ttyUSB0"></node>
-
-</launch>
