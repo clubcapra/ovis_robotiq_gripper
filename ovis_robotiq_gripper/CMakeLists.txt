@@ -14,8 +14,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 ###################################
 add_message_files(
   FILES
-  ovis_gripper_robot_input.msg
-  ovis_gripper_robot_output.msg
+  OvisGripper_robot_input.msg
+  OvisGripper_robot_output.msg
 )
 
 catkin_python_setup()
