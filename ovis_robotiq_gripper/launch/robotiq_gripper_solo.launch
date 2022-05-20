@@ -7,6 +7,6 @@
 		<param name="autorepeat_rate" value="50" />
 	</node>
 
-	<include file="$(find robotiq_2f_gripper_control)/launch/robotiq_gripper.launch" />
+	<include file="$(find ovis_robotiq_gripper)/launch/robotiq_gripper.launch" />
 
 </launch>

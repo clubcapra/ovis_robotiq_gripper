@@ -41,18 +41,18 @@ include_directories(
   ${robotiq_ethercat_INCLUDE_DIRS}
 )
 
-add_executable(robotiq_2f_gripper_ethercat_node
-  src/robotiq_2f_gripper_control/robotiq_2f_gripper_ethercat_node.cpp
-  src/robotiq_2f_gripper_control/robotiq_2f_gripper_ethercat_client.cpp
+add_executable(robotiq_2f_gripper_ethercat_node_for_ovis
+  src/ovis_robotiq_gripper/robotiq_2f_gripper_ethercat_node.cpp
+  src/ovis_robotiq_gripper/robotiq_2f_gripper_ethercat_client.cpp
 )
 
-target_link_libraries(robotiq_2f_gripper_ethercat_node
+target_link_libraries(robotiq_2f_gripper_ethercat_node_for_ovis
    ${robotiq_ethercat_LIBRARIES}
    ${catkin_LIBRARIES}
   
 )
 
-add_dependencies(robotiq_2f_gripper_ethercat_node robotiq_2f_gripper_control_generate_messages_cpp)
+add_dependencies(robotiq_2f_gripper_ethercat_node_for_ovis robotiq_2f_gripper_control_generate_messages_cpp)
 
 #############
 ## Install ##
