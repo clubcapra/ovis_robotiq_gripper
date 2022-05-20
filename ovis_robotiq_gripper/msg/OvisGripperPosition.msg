@@ -1,1 +1,1 @@
-unint8 position
+uint8 position

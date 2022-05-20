@@ -1,7 +1,7 @@
 # http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
 cmake_minimum_required(VERSION 2.8.3)
 project(ovis_robotiq_gripper)
-find_package(catkin REQUIRED COMPONENTS robotiq_ethercat roscpp rospy message_generation)
+find_package(catkin REQUIRED COMPONENTS std_msgs robotiq_ethercat roscpp rospy message_generation)
 
 
 #set the default path for built executables to the "bin" directory
@@ -21,7 +21,10 @@ add_message_files(
 
 catkin_python_setup()
 
-generate_messages()
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -32,7 +35,7 @@ generate_messages()
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-    CATKIN_DEPENDS rospy message_runtime roscpp robotiq_ethercat
+    CATKIN_DEPENDS rospy message_runtime roscpp robotiq_ethercat std_msgs
     INCLUDE_DIRS include
 )
 
