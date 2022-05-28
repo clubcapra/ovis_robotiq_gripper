@@ -54,7 +54,7 @@ command = outputMsg.OvisGripper_robot_output()
 def command_callback(input):
     global command
 
-    command = outputMsg.OvisGripper_robot_output()
+    ##command = outputMsg.OvisGripper_robot_output()
 
     if input.position == 0:
         command.rACT = 0
