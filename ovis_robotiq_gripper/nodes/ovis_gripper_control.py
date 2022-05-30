@@ -72,15 +72,29 @@ def command_callback(input):
     elif input.position == 2 and current_position.gPR == 255:
         command.rPR = 0  # open
 
-def boot_sequence():
+def boot_sequence(gripper, pubOutput):
+    # Deactivate the gripper from its initial state
     reboot_part_1 = positionMsg.OvisGripperPosition
     reboot_part_1.position = 0
     command_callback(reboot_part_1)
 
+    send_command(gripper, pubOutput)
+
+    # Reactivate the gripper
     reboot_part_2 = positionMsg.OvisGripperPosition
     reboot_part_2.position = 1
     command_callback(reboot_part_2)
 
+    send_command(gripper, pubOutput)
+
+def send_command(gripper, pubOutput):
+    global command
+
+    # Publish the command
+    pubOutput.publish(command)
+    # Give the most recent command to the gripper class and send it
+    gripper.refreshCommand(command)
+    gripper.sendCommand()
 
 def mainLoop(device):
 
@@ -101,7 +115,7 @@ def mainLoop(device):
     pubOutput = rospy.Publisher(
         'gripper_output', outputMsg.OvisGripper_robot_output, queue_size=1)
 
-    boot_sequence()
+    boot_sequence(gripper, pubOutput)
 
     # We loop
     while not rospy.is_shutdown():
@@ -117,11 +131,7 @@ def mainLoop(device):
         rospy.Subscriber("/ovis/gripper/position_goal",
                          positionMsg.OvisGripperPosition, command_callback, queue_size=1)
 
-        # Publish the command
-        pubOutput.publish(command)
-        # Give the most recent command to the gripper class and send it
-        gripper.refreshCommand(command)
-        gripper.sendCommand()
+        send_command(gripper, pubOutput)
 
 
 if __name__ == '__main__':
