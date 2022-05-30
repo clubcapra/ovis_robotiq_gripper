@@ -47,14 +47,14 @@ import roslib
 roslib.load_manifest('robotiq_2f_gripper_control')
 roslib.load_manifest('robotiq_modbus_rtu')
 
-# Global declararion
+# Global declararions
 command = outputMsg.OvisGripper_robot_output()
+current_position = inputMsg.OvisGripper_robot_input()
 
 
 def command_callback(input):
     global command
-
-    ##command = outputMsg.OvisGripper_robot_output()
+    global current_position
 
     if input.position == 0:
         command.rACT = 0
@@ -66,11 +66,20 @@ def command_callback(input):
         command.rFR = 255  # maximum force
         command.rSP = 255  # Maximum speed
 
-    elif input.position == 2:
+    elif input.position == 2 and current_position.gPR == 0:
         command.rPR = 255  # close
 
-    elif input.position == 3:
+    elif input.position == 2 and current_position.gPR == 255:
         command.rPR = 0  # open
+
+def boot_sequence():
+    reboot_part_1 = positionMsg.OvisGripperPosition
+    reboot_part_1.position = 0
+    command_callback(reboot_part_1)
+
+    reboot_part_2 = positionMsg.OvisGripperPosition
+    reboot_part_2.position = 1
+    command_callback(reboot_part_2)
 
 
 def mainLoop(device):
@@ -92,13 +101,17 @@ def mainLoop(device):
     pubOutput = rospy.Publisher(
         'gripper_output', outputMsg.OvisGripper_robot_output, queue_size=1)
 
+    boot_sequence()
+
     # We loop
     while not rospy.is_shutdown():
         global command
+        global current_position
 
         # Get and publish the Gripper status
         status = gripper.getStatus()
         pubInput.publish(status)
+        current_position = status
 
         # Get the most recent command
         rospy.Subscriber("/ovis/gripper/position_goal",
