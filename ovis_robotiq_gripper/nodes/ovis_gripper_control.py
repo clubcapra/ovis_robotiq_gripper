@@ -56,45 +56,16 @@ def command_callback(input):
     global command
     global current_position
 
-    if input.position == 0:
-        command.rACT = 0
-        command.rGTO = 0
+    command.rACT = 1  # activates the gripper
+    command.rGTO = 1  # Go to requested position
+    command.rFR = 255  # maximum force
+    command.rSP = 255
 
-    elif input.position == 1:
-        command.rACT = 1  # activates the gripper
-        command.rGTO = 1  # Go to requested position
-        command.rFR = 255  # maximum force
-        command.rSP = 255  # Maximum speed
-
-    elif input.position == 2 and current_position.gPO <= 3:
+    if input.position == 2 and current_position.gPO <= 3:
         command.rPR = 255  # close
 
     elif input.position == 2:
         command.rPR = 0  # open
-
-def boot_sequence(gripper, pubOutput):
-    # Deactivate the gripper from its initial state
-    reboot_part_1 = positionMsg.OvisGripperPosition
-    reboot_part_1.position = 0
-    command_callback(reboot_part_1)
-
-    send_command(gripper, pubOutput)
-
-    # Reactivate the gripper
-    reboot_part_2 = positionMsg.OvisGripperPosition
-    reboot_part_2.position = 1
-    command_callback(reboot_part_2)
-
-    send_command(gripper, pubOutput)
-
-def send_command(gripper, pubOutput):
-    global command
-
-    # Publish the command
-    pubOutput.publish(command)
-    # Give the most recent command to the gripper class and send it
-    gripper.refreshCommand(command)
-    gripper.sendCommand()
 
 def mainLoop(device):
 
@@ -131,7 +102,11 @@ def mainLoop(device):
         rospy.Subscriber("/ovis/gripper/position_goal",
                          positionMsg.OvisGripperPosition, command_callback, queue_size=10)
 
-        send_command(gripper, pubOutput)
+        # Publish the command
+        pubOutput.publish(command)
+        # Give the most recent command to the gripper class and send it
+        gripper.refreshCommand(command)
+        gripper.sendCommand()
 
 
 if __name__ == '__main__':
