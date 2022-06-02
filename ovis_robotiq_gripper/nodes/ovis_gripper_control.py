@@ -66,10 +66,10 @@ def command_callback(input):
         command.rFR = 255  # maximum force
         command.rSP = 255  # Maximum speed
 
-    elif input.position == 2 and current_position.gPR == 0:
+    elif input.position == 2 and current_position.gPO <= 3:
         command.rPR = 255  # close
 
-    elif input.position == 2 and current_position.gPR == 255:
+    elif input.position == 2:
         command.rPR = 0  # open
 
 def boot_sequence(gripper, pubOutput):
@@ -115,7 +115,7 @@ def mainLoop(device):
     pubOutput = rospy.Publisher(
         'gripper_output', outputMsg.OvisGripper_robot_output, queue_size=1)
 
-    boot_sequence(gripper, pubOutput)
+    #boot_sequence(gripper, pubOutput)
 
     # We loop
     while not rospy.is_shutdown():
@@ -129,7 +129,7 @@ def mainLoop(device):
 
         # Get the most recent command
         rospy.Subscriber("/ovis/gripper/position_goal",
-                         positionMsg.OvisGripperPosition, command_callback, queue_size=1)
+                         positionMsg.OvisGripperPosition, command_callback, queue_size=10)
 
         send_command(gripper, pubOutput)
 
