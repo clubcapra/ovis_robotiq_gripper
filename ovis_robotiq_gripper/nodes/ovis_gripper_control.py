@@ -35,11 +35,17 @@
 # Copyright (c) 2012, Robotiq, Inc.
 # Revision $Id$
 
+# Base imports
 import sys
 import os
+
+# Message imports
 from ovis_robotiq_gripper.msg import _OvisGripperPosition as positionMsg
 from ovis_robotiq_gripper.msg import _OvisGripper_robot_output as outputMsg
 from ovis_robotiq_gripper.msg import _OvisGripper_robot_input as inputMsg
+from ovis_robotiq_gripper.msg import _OvisGripperConstants as cons
+
+# Custom, Robotiq and ROS imports
 import robotiq_modbus_rtu.comModbusRtu
 import ovis_robotiq_gripper.baseRobotiq2FGripper
 import rospy
@@ -56,16 +62,25 @@ def command_callback(input):
     global command
     global current_position
 
-    command.rACT = 1  # activates the gripper
-    command.rGTO = 1  # Go to requested position
-    command.rFR = 255  # maximum force
-    command.rSP = 255
+    # Default values setup
+    command.rACT = cons.ON  # activates the gripper
+    command.rGTO = cons.ON  # Go to requested position
+    command.rFR = cons.MAX_FORCE  # maximum force
+    command.rSP = cons.MAX_SPEED
 
-    if input.position == 2 and current_position.gPO <= 3:
-        command.rPR = 255  # close
+    if input.position == 0:
+        command.rACT = cons.OFF  # activates the gripper
+        command.rGTO = cons.OFF  # Go to requested position
+        rospy.logdebug("Debug info: position = 2 and command sent is OFF")
+
+    if input.position == 1:
+        rospy.logdebug("Debug info: position = 1 and command sent is ON")
+
+    elif input.position == 2 and current_position.gPO <= 3:
+        command.rPR = cons.CLOSE  # close
 
     elif input.position == 2:
-        command.rPR = 0  # open
+        command.rPR = cons.OPEN  # open
 
 def mainLoop(device):
 
