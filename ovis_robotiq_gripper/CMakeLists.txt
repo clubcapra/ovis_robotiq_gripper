@@ -17,6 +17,7 @@ add_message_files(
   OvisGripper_robot_input.msg
   OvisGripper_robot_output.msg
   OvisGripperPosition.msg
+  OvisGripperConstants.msg
 )
 
 catkin_python_setup()
