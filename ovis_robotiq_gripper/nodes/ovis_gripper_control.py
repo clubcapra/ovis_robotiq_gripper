@@ -43,7 +43,7 @@ import os
 from ovis_robotiq_gripper.msg import _OvisGripperPosition as positionMsg
 from ovis_robotiq_gripper.msg import _OvisGripper_robot_output as outputMsg
 from ovis_robotiq_gripper.msg import _OvisGripper_robot_input as inputMsg
-from ovis_robotiq_gripper.msg import _OvisGripperConstants as cons
+import gripper_constants as cons
 
 # Custom, Robotiq and ROS imports
 import robotiq_modbus_rtu.comModbusRtu
