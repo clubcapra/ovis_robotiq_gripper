@@ -43,7 +43,7 @@ import os
 from ovis_robotiq_gripper.msg import _OvisGripperPosition as positionMsg
 from ovis_robotiq_gripper.msg import _OvisGripper_robot_output as outputMsg
 from ovis_robotiq_gripper.msg import _OvisGripper_robot_input as inputMsg
-import gripper_constants as cons
+import gripper_constants
 
 # Custom, Robotiq and ROS imports
 import robotiq_modbus_rtu.comModbusRtu
@@ -63,26 +63,26 @@ def command_callback(input):
     global current_position
 
     # Default values setup
-    command.rACT = cons.ON  # activates the gripper
-    command.rGTO = cons.ON  # Go to requested position
-    command.rFR = cons.MAX_FORCE  # maximum force
-    command.rSP = cons.MAX_SPEED
+    command.rACT = gripper_constants.ON  # activates the gripper
+    command.rGTO = gripper_constants.ON  # Go to requested position
+    command.rFR = gripper_constants.MAX_FORCE  # maximum force
+    command.rSP = gripper_constants.MAX_SPEED
 
     if input.position == 0:
-        command.rACT = cons.OFF  # activates the gripper
-        command.rGTO = cons.OFF  # Go to requested position
+        command.rACT = gripper_constants.OFF  # activates the gripper
+        command.rGTO = gripper_constants.OFF  # Go to requested position
         rospy.logdebug("Debug info: position = 2 and command sent is OFF")
 
     if input.position == 1:
         rospy.logdebug("Debug info: position = 1 and command sent is ON")
 
     elif input.position == 2 and current_position.gPO <= 3:
-        command.rPR = cons.CLOSE  # close
+        command.rPR = gripper_constants.CLOSE  # close
 
     elif input.position == 2:
-        command.rPR = cons.OPEN  # open
+        command.rPR = gripper_constants.OPEN  # open
 
-def mainLoop(device):
+def main_loop(device):
 
     # Gripper is a 2F with a TCP connection
     gripper = ovis_robotiq_gripper.baseRobotiq2FGripper.robotiqbaseRobotiq2FGripper()
@@ -94,14 +94,13 @@ def mainLoop(device):
     rospy.init_node("ovis_robotiq_gripper")
 
     # The Gripper status is published on the topic named 'gripper_input'
-    pubInput = rospy.Publisher(
-        'gripper_input', inputMsg.OvisGripper_robot_input, queue_size=1)
+    pub_input = rospy.Publisher(
+        'gripper_status', inputMsg.OvisGripper_robot_input, queue_size=1)
 
     # The Gripper command is published on the topic named 'gripper_output'
-    pubOutput = rospy.Publisher(
-        'gripper_output', outputMsg.OvisGripper_robot_output, queue_size=1)
+    pub_output = rospy.Publisher(
+        'gripper_command', outputMsg.OvisGripper_robot_output, queue_size=1)
 
-    #boot_sequence(gripper, pubOutput)
 
     # We loop
     while not rospy.is_shutdown():
@@ -110,7 +109,7 @@ def mainLoop(device):
 
         # Get and publish the Gripper status
         status = gripper.getStatus()
-        pubInput.publish(status)
+        pub_input.publish(status)
         current_position = status
 
         # Get the most recent command
@@ -118,7 +117,7 @@ def mainLoop(device):
                          positionMsg.OvisGripperPosition, command_callback, queue_size=10)
 
         # Publish the command
-        pubOutput.publish(command)
+        pub_output.publish(command)
         # Give the most recent command to the gripper class and send it
         gripper.refreshCommand(command)
         gripper.sendCommand()
@@ -126,6 +125,6 @@ def mainLoop(device):
 
 if __name__ == '__main__':
     try:
-        mainLoop(sys.argv[1])
+        main_loop(sys.argv[1])
     except rospy.ROSInterruptException:
         pass
