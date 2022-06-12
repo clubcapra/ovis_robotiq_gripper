@@ -1,5 +1,5 @@
 <launch>
-  <arg name="robot_namespace" default="/ovis/gripper" />
-  <node name="ovis_robotiq_gripper" pkg="ovis_robotiq_gripper" type="ovis_gripper_control.py" ns="$(arg robot_namespace)" output="screen" args="/dev/ttyUSB0"></node>
-
+  <arg name="robot_namespace" default="/ovis/gripper"/>
+  <arg name="connection_point" default="/dev/ttyUSB0"/>
+  <node name="ovis_robotiq_gripper" pkg="ovis_robotiq_gripper" type="ovis_gripper_control.py" ns="$(arg robot_namespace)" output="screen" args="$(arg connection_point)"/>
 </launch>

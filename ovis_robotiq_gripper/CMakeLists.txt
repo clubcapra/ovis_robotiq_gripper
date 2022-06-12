@@ -53,7 +53,6 @@ add_executable(robotiq_2f_gripper_ethercat_node_for_ovis
 target_link_libraries(robotiq_2f_gripper_ethercat_node_for_ovis
    ${robotiq_ethercat_LIBRARIES}
    ${catkin_LIBRARIES}
-  
 )
 
 add_dependencies(robotiq_2f_gripper_ethercat_node_for_ovis robotiq_2f_gripper_control_generate_messages_cpp)
