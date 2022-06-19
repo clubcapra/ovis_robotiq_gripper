@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ovis_robotiq_gripper</name>
+  <version>1.0.0</version>
+  <description>Package to control a 2-Finger Gripper from Robotiq inc. equipped on the Ovis arm from Club Capra</description>
+  <maintainer email="capra@clubcapra.com">Club Capra</maintainer>
+  <license>BSD</license>
+  <url type="website">https://www.clubcapra/com</url>
+  <author>Club Capra</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>roscpp</depend>
+  <depend>robotiq_ethercat</depend>
+  <depend>robotiq_modbus_rtu</depend>
+  <depend>std_msgs</depend>
+
+  <build_depend>message_generation</build_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+
+</package>

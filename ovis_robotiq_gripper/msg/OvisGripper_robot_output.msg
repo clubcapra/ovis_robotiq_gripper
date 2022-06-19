@@ -1,0 +1,6 @@
+uint8 requestActivation #requestActivation
+uint8 requestActionStatus #requestActionStatus
+uint8 requestAutomaticRelease #requestAutomaticRelease
+uint8 requestPosition #requestPosition
+uint8 requestSpeed #requestSpeed
+uint8 requestForce #requestForce
