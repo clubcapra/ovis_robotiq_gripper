@@ -63,24 +63,24 @@ def command_callback(input):
     global current_position
 
     # Default values setup
-    command.rACT = gripper_constants.ON  # activates the gripper
-    command.rGTO = gripper_constants.ON  # Go to requested position
-    command.rFR = gripper_constants.MAX_FORCE  # maximum force
-    command.rSP = gripper_constants.MAX_SPEED
+    command.requestActivation = gripper_constants.ON  # activates the gripper
+    command.requestActionStatus = gripper_constants.ON  # Go to requested position
+    command.requestForce = gripper_constants.MAX_FORCE  # maximum force
+    command.requestSpeed = gripper_constants.MAX_SPEED
 
     if input.position == 0:
-        command.rACT = gripper_constants.OFF  # activates the gripper
-        command.rGTO = gripper_constants.OFF  # Go to requested position
+        command.requestActivation = gripper_constants.OFF  # activates the gripper
+        command.requestActionStatus = gripper_constants.OFF  # Go to requested position
         rospy.logdebug("Debug info: position = 2 and command sent is OFF")
 
     if input.position == 1:
         rospy.logdebug("Debug info: position = 1 and command sent is ON")
 
     elif input.position == 2 and current_position.gPO <= 3:
-        command.rPR = gripper_constants.CLOSE  # close
+        command.requestPosition = gripper_constants.CLOSE  # close
 
     elif input.position == 2:
-        command.rPR = gripper_constants.OPEN  # open
+        command.requestPosition = gripper_constants.OPEN  # open
 
 def main_loop(device):
 
@@ -101,6 +101,9 @@ def main_loop(device):
     pub_output = rospy.Publisher(
         'gripper_command', outputMsg.OvisGripper_robot_output, queue_size=1)
 
+    # Get the most recent command
+    rospy.Subscriber("/ovis/gripper/position_goal",
+            positionMsg.OvisGripperPosition, command_callback, queue_size=10)
 
     # We loop
     while not rospy.is_shutdown():
@@ -112,9 +115,6 @@ def main_loop(device):
         pub_input.publish(status)
         current_position = status
 
-        # Get the most recent command
-        rospy.Subscriber("/ovis/gripper/position_goal",
-                         positionMsg.OvisGripperPosition, command_callback, queue_size=10)
 
         # Publish the command
         pub_output.publish(command)

@@ -55,24 +55,24 @@ class robotiqbaseRobotiq2FGripper:
     def verifyCommand(self, command):
         """Function to verify that the value of each variable satisfy its limits."""
     	   	
-   	#Verify that each variable is in its correct range
-   	command.rACT = max(0, command.rACT)
-   	command.rACT = min(1, command.rACT)
-   	
-   	command.rGTO = max(0, command.rGTO)
-   	command.rGTO = min(1, command.rGTO)
+        #Verify that each variable is in its correct range
+        command.requestActivation = max(0, command.requestActivation)
+        command.requestActivation = min(1, command.requestActivation)
+        
+        command.requestActionStatus = max(0, command.requestActionStatus)
+        command.requestActionStatus = min(1, command.requestActionStatus)
 
-   	command.rATR = max(0, command.rATR)
-   	command.rATR = min(1, command.rATR)
-   	
-   	command.rPR  = max(0,   command.rPR)
-   	command.rPR  = min(255, command.rPR)   	
+        command.requestAutomaticRelease = max(0, command.requestAutomaticRelease)
+        command.requestAutomaticRelease = min(1, command.requestAutomaticRelease)
+        
+        command.requestPosition  = max(0,   command.requestPosition)
+        command.requestPosition  = min(255, command.requestPosition)
 
-   	command.rSP  = max(0,   command.rSP)
-   	command.rSP  = min(255, command.rSP)   	
+        command.requestSpeed  = max(0,   command.requestSpeed)
+        command.requestSpeed  = min(255, command.requestSpeed)
 
-   	command.rFR  = max(0,   command.rFR)
-   	command.rFR  = min(255, command.rFR) 
+        command.requestForce  = max(0,   command.requestForce)
+        command.requestForce  = min(255, command.requestForce)
    	
    	#Return the modified command
    	return command
@@ -88,15 +88,15 @@ class robotiqbaseRobotiq2FGripper:
 
         #Build the command with each output variable
         #To-Do: add verification that all variables are in their authorized range
-        self.message.append(command.rACT + (command.rGTO << 3) + (command.rATR << 4))
+        self.message.append(command.requestActivation + (command.requestActionStatus << 3) + (command.requestAutomaticRelease << 4))
         self.message.append(0)
         self.message.append(0)
-        self.message.append(command.rPR)
-        self.message.append(command.rSP)
-        self.message.append(command.rFR)     
+        self.message.append(command.requestPosition)
+        self.message.append(command.requestSpeed)
+        self.message.append(command.requestForce)
 
     def sendCommand(self):
-        """Send the command to the Gripper."""    
+        """Send the command to the Gripper."""
         
         self.client.sendCommand(self.message)
 
@@ -110,14 +110,13 @@ class robotiqbaseRobotiq2FGripper:
         message = inputMsg.Robotiq2FGripper_robot_input()
 
         #Assign the values to their respective variables
-        message.gACT = (status[0] >> 0) & 0x01;        
+        message.gACT = (status[0] >> 0) & 0x01;
         message.gGTO = (status[0] >> 3) & 0x01;
         message.gSTA = (status[0] >> 4) & 0x03;
         message.gOBJ = (status[0] >> 6) & 0x03;
         message.gFLT =  status[2]
         message.gPR  =  status[3]
         message.gPO  =  status[4]
-        message.gCU  =  status[5]       
+        message.gCU  =  status[5]
 
         return message
-        

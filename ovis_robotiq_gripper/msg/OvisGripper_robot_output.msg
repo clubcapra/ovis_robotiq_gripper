@@ -1,6 +1,6 @@
-uint8 rACT #requestActivation
-uint8 rGTO #requestActionStatus
-uint8 rATR #requestAutomaticRelease
-uint8 rPR #requestPosition
-uint8 rSP #requestSpeed
-uint8 rFR #requestForce
+uint8 requestActivation #requestActivation
+uint8 requestActionStatus #requestActionStatus
+uint8 requestAutomaticRelease #requestAutomaticRelease
+uint8 requestPosition #requestPosition
+uint8 requestSpeed #requestSpeed
+uint8 requestForce #requestForce
