@@ -83,7 +83,6 @@ def command_callback(input):
         command.requestPosition = gripper_constants.OPEN  # open
 
 def main_loop(device):
-
     # Gripper is a 2F with a TCP connection
     gripper = ovis_robotiq_gripper.baseRobotiq2FGripper.robotiqbaseRobotiq2FGripper()
     gripper.client = robotiq_modbus_rtu.comModbusRtu.communication()
@@ -105,6 +104,18 @@ def main_loop(device):
     rospy.Subscriber("/ovis/gripper/position_goal",
             positionMsg.OvisGripperPosition, command_callback, queue_size=10)
 
+    # Have the gripper initialise by closing and opening
+    initial_open_close = positionMsg.OvisGripperPosition()
+    initial_open_close.position = 2
+    current_position.gPO = 0
+    command_callback(initial_open_close)
+    
+    # Publish the command
+    pub_output.publish(command)
+    # Give the most recent command to the gripper class and send it
+    gripper.refreshCommand(command)
+    gripper.sendCommand()
+    
     # We loop
     while not rospy.is_shutdown():
         global command
